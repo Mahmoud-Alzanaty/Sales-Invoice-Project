@@ -201,7 +201,7 @@ public class SalesInvoiceView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newItemButtonActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_newItemButtonActionPerformed
 
     /**

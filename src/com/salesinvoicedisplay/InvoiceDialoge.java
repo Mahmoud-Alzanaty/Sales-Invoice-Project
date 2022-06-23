@@ -50,8 +50,11 @@ public class InvoiceDialoge extends JDialog {
         return customerNameField;
     }
 
-    public JTextField getInvoicedaydateField() {
+
+
+        public JTextField getInvoicedaydateField () {
         return invoicedaydateField;
     }
-    
+
+
 }

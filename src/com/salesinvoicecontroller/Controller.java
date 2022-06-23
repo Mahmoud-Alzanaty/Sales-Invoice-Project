@@ -22,7 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFileChooser;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -220,21 +222,66 @@ public class Controller implements ActionListener, ListSelectionListener{
     
     private void invoOK() {
         String date = invoDialoge.getInvoicedaydateField().getText();
+
+        if(date.isEmpty()){
+            JOptionPane.showMessageDialog(this.invoDialoge, "date is empty");
+            return;
+        }
+        boolean doesMatch = Pattern.matches("\\d{1,2}-\\d{1,2}-\\d{4}", date);
+        if(!doesMatch){
+            JOptionPane.showMessageDialog(this.invoDialoge, "Date format doesn't match required format dd-mm-yyyy");
+            hideInvoiceDialog();
+            return;
+        }
+
         String customer = invoDialoge.getCustomerNameField().getText();
+        if (customer.isEmpty()){
+
+            JOptionPane.showMessageDialog(this.invoDialoge,"Customer name shouldn't be empty");
+            return;
+        }
+         else if (!Pattern.matches("[a-zA-Z ]+", customer)) {
+             JOptionPane.showMessageDialog(invoDialoge,"Customer name should contain characters only");
+             return;
+
+        }
         int num = screen.getNextInvoiceId();
-        
+
         Invoice invoice = new Invoice (num,date,customer);
         screen.getInvoices().add(invoice);
         screen.getInvoicesGridModel().fireTableDataChanged();
-        invoDialoge.setVisible(false);
-        invoDialoge.dispose();
-        invoDialoge = null;
+        hideInvoiceDialog();
+        }
+
+        private void hideInvoiceDialog(){
+            invoDialoge.setVisible(false);
+            invoDialoge.dispose();
+            invoDialoge = null;
         }
 
     private void itemOK() {
         String item = itemDialoge.getItemNameField().getText();
+        if(item.isEmpty()){
+            JOptionPane.showMessageDialog(itemDialoge,"Item is empty");
+            return;
+        }
         String countStr = itemDialoge.getItemCountField().getText();
+        if(countStr.isEmpty()) {
+            JOptionPane.showMessageDialog(itemDialoge, "Item is empty");
+            return;
+        } else if (!Pattern.matches("\\d+",countStr)) {
+            JOptionPane.showMessageDialog(itemDialoge,"Count should be a number");
+            return;
+        }
         String priceStr = itemDialoge.getItemFeesField().getText();
+        if (priceStr.isEmpty()){
+            JOptionPane.showMessageDialog(itemDialoge,"Price is empty");
+            return;
+        }
+         else if (!Pattern.matches("\\d+",priceStr)) {
+            JOptionPane.showMessageDialog(itemDialoge, "Count should be a number");
+            return;
+        }
         int count = Integer.parseInt(countStr);
         double price = Double.parseDouble(priceStr);
         int selectedInvoice = screen.getInvoGrid().getSelectedRow();
@@ -246,17 +293,19 @@ public class Controller implements ActionListener, ListSelectionListener{
             linesTableModel.fireTableDataChanged();
             screen.getInvoicesGridModel().fireTableDataChanged();
         }
-        
+
+        hideItemDialog();
+    }
+
+    private void hideItemDialog() {
         itemDialoge.setVisible(false);
         itemDialoge.dispose();
         itemDialoge = null;
-        }
+    }
 
     private void itemCancel() {
-        itemDialoge.setVisible(false);
-        itemDialoge.dispose();
-        itemDialoge = null;
-        }
+        hideItemDialog();
+    }
 
    
     
